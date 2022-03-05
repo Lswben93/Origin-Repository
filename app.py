@@ -93,10 +93,9 @@ def name():
 			strj += "}"
 	return strj
 
-@app.route("/api/attraction",methods=["GET"])
-def id():
+@app.route("/api/attraction/<id>",methods=["GET"])
+def getId(id):
 	nextpage=request.args.get("page",1)
-	id=request.args.get("id")
 	if id=="":
 		return {
   				"error": True,
@@ -105,9 +104,9 @@ def id():
 	else:
 		mycursor=DB.cursor(dictionary=True)
 		if nextpage==1:
-			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id LIKE "+ str(id) +" LIMIT 12"
+			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id = "+ str(id) +" LIMIT 12"
 		else:
-			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id LIKE "+ str(id) +" LIMIT " + str(12*(int(nextpage)-1)) + ",12"	
+			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id = "+ str(id) +" LIMIT " + str(12*(int(nextpage)-1)) + ",12"	
 		mycursor.execute(strsql)
 		result=mycursor.fetchall()
 		if result==[]:
