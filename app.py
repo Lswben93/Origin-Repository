@@ -67,7 +67,7 @@ def name():
 				}
 		else:
 			
-			strj = "{\"nextpage\":\""+str(nextpage)+"\","
+			strj = "{\"nextpage\":"+str(nextpage)+","
 			for row in result:
 				id=row["id"]
 				name=row["name"]
@@ -80,16 +80,16 @@ def name():
 				longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
 				image=row["image"].decode("utf-8")
 				strj += "\"data\":[{"
-				strj += "  \"id\":\"" + str(id) + "\","
+				strj += "  \"id\":" + str(id) + ","
 				strj += "  \"name\":\"" + name + "\","
 				strj += "  \"category\":\"" + category + "\","
 				strj += "  \"description\":\"" + description + "\","
 				strj += "  \"address\":\"" + address + "\","
 				strj += "  \"transport\":\"" + transport + "\","
 				strj += "  \"mrt\":\"" + mrt + "\","
-				strj += "  \"latitude\":\"" + str(latitude) + "\","
-				strj += "  \"longitude\":\"" + str(longitude) + "\","
-				strj += "  \"image\":\"" + image + "\"]}],"
+				strj += "  \"latitude\":" + str(latitude) + ","
+				strj += "  \"longitude\":" + str(longitude) + ","
+				strj += "  \"image\":[\"" + image + "\"]}],"
 				
 			strj = strj[:len(strj)-1]
 			strj += "}"
@@ -97,7 +97,6 @@ def name():
 
 @app.route("/api/attraction/<id>",methods=["GET"])
 def getId(id):
-	nextpage=request.args.get("page",1)
 	if id=="":
 		return {
   				"error": True,
@@ -105,10 +104,7 @@ def getId(id):
 				}
 	else:
 		mycursor=DB.cursor(dictionary=True)
-		if nextpage==1:
-			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id = "+ str(id) +" LIMIT 12"
-		else:
-			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id = "+ str(id) +" LIMIT " + str(12*(int(nextpage)-1)) + ",12"	
+		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE id = "+ str(id) +" "
 		mycursor.execute(strsql)
 		result=mycursor.fetchall()
 		if result==[]:
@@ -118,7 +114,7 @@ def getId(id):
 				}
 		else:
 			
-			strj = "{\"nextpage\":\""+str(nextpage)+"\","
+			strj = "{\"data\":{"
 			for row in result:
 				id=row["id"]
 				name=row["name"]
@@ -130,17 +126,16 @@ def getId(id):
 				latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
 				longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
 				image=row["image"].decode("utf-8")
-				strj += "\"data\":[{"
-				strj += "  \"id\":\"" + str(id) + "\","
+				strj += "  \"id\":" + str(id) + ","
 				strj += "  \"name\":\"" + name + "\","
 				strj += "  \"category\":\"" + category + "\","
 				strj += "  \"description\":\"" + description + "\","
 				strj += "  \"address\":\"" + address + "\","
 				strj += "  \"transport\":\"" + transport + "\","
-				strj += "  \"mrt\":\"" + mrt + "\","
-				strj += "  \"latitude\":\"" + str(latitude) + "\","
-				strj += "  \"longitude\":\"" + str(longitude) + "\","
-				strj += "  \"image\":\"" + image + "\"]}],"
+				strj += "  \"mrt\":\"" + str(mrt) + "\","
+				strj += "  \"latitude\":" + str(latitude) + ","
+				strj += "  \"longitude\":" + str(longitude) + ","
+				strj += "  \"image\":[\"" + image + "\"]},"
 				
 			strj = strj[:len(strj)-1]
 			strj += "}"
