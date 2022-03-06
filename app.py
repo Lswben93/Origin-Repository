@@ -12,8 +12,10 @@ DB=mysql.connector.connect(
     user=os.getenv("user"),
     password=os.getenv("password"),
     database=os.getenv("database"),
+	auth_plugin='mysql_native_password',
     charset='utf8'
 )
+
 
 class JsonEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -145,4 +147,4 @@ def getId(id):
 	return strj
 
 
-app.run(port=3000)
+app.run(host='0.0.0.0',port=3000)
