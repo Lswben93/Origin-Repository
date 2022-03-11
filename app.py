@@ -44,20 +44,13 @@ def thankyou():
 
 @app.route("/api/attractions",methods=["GET"])
 def name():
-	nextpage=request.args.get("page",1)
+	page=request.args.get("page")
+	nextpage=int(page)+1
 	name=request.args.get("name")
+	mycursor=DB.cursor(dictionary=True)
 	
-	if name=="":
-		return {
-  				"error": True,
-  				"message": "請輸入關鍵字"
-				}
-	else:
-		mycursor=DB.cursor(dictionary=True)
-		if nextpage==1:
-			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE name LIKE '%"+ name +"%' LIMIT 12"
-		else:
-			strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE name LIKE '%"+ name +"%' LIMIT " + str(12*(int(nextpage)-1)) + ",12"	
+	if name!=None:
+		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations WHERE name LIKE '%"+ name +"%' LIMIT " + str(12*int(page)) + ",12"
 		mycursor.execute(strsql)
 		result=mycursor.fetchall()
 		if result==[]:
@@ -93,7 +86,42 @@ def name():
 				
 			strj = strj[:len(strj)-1]
 			strj += "}"
-	return strj
+			return strj
+	else:
+		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations  LIMIT " + str(12*int(page)) + ",12"
+		mycursor.execute(strsql)
+		result=mycursor.fetchall()
+		strj = "{\"nextpage\":"+str(nextpage)+","
+		for row in result:
+			id=row["id"]
+			name=row["name"]
+			category=row["category"]
+			description=row["description"]
+			address=row["address"]
+			transport=row["transport"]
+			mrt=row["mrt"]
+			latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
+			longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
+			image=row["image"].decode("utf-8")
+			strj += "\"data\":[{"
+			strj += "  \"id\":" + str(id) + ","
+			strj += "  \"name\":\"" + name + "\","
+			strj += "  \"category\":\"" + category + "\","
+			strj += "  \"description\":\"" + description + "\","
+			strj += "  \"address\":\"" + address + "\","
+			strj += "  \"transport\":\"" + transport + "\","
+			strj += "  \"mrt\":\"" + mrt + "\","
+			strj += "  \"latitude\":" + str(latitude) + ","
+			strj += "  \"longitude\":" + str(longitude) + ","
+			strj += "  \"image\":[\"" + image + "\"]}],"
+				
+		strj = strj[:len(strj)-1]
+		strj += "}"
+		return strj
+
+				
+		
+		
 
 @app.route("/api/attraction/<id>",methods=["GET"])
 def getId(id):
@@ -142,4 +170,4 @@ def getId(id):
 	return strj
 
 
-app.run(host='0.0.0.0',port=3000)
+app.run(port=3000)
