@@ -60,7 +60,7 @@ def name():
 				}
 		else:
 			
-			strj = "{\"nextpage\":"+str(nextpage)+","
+			strj = "{\"nextpage\":"+str(nextpage)+",\"data\":["
 			for row in result:
 				id=row["id"]
 				name=row["name"]
@@ -72,8 +72,7 @@ def name():
 				latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
 				longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
 				image=row["image"].decode("utf-8")
-				strj += "\"data\":[{"
-				strj += "  \"id\":" + str(id) + ","
+				strj += "  {\"id\":" + str(id) + ","
 				strj += "  \"name\":\"" + name + "\","
 				strj += "  \"category\":\"" + category + "\","
 				strj += "  \"description\":\"" + description + "\","
@@ -82,16 +81,16 @@ def name():
 				strj += "  \"mrt\":\"" + mrt + "\","
 				strj += "  \"latitude\":" + str(latitude) + ","
 				strj += "  \"longitude\":" + str(longitude) + ","
-				strj += "  \"image\":[\"" + image + "\"]}],"
+				strj += "  \"image\":[\"" + image + "\"]},"
 				
-			strj = strj[:len(strj)-1]
-			strj += "}"
-			return strj
+		strj = strj[:len(strj)-1]
+		strj += "]}"
+		return strj
 	else:
-		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations  LIMIT " + str(int(page)) + ",1"
+		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations  LIMIT " + str(12*int(page)) + ",12"
 		mycursor.execute(strsql)
 		result=mycursor.fetchall()
-		strj = "{\"nextpage\":"+str(nextpage)+","
+		strj = "{\"nextpage\":"+str(nextpage)+",\"data\":["
 		for row in result:
 			id=row["id"]
 			name=row["name"]
@@ -103,8 +102,7 @@ def name():
 			latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
 			longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
 			image=row["image"].decode("utf-8")
-			strj += "\"data\":[{"
-			strj += "  \"id\":" + str(id) + ","
+			strj += "  {\"id\":" + str(id) + ","
 			strj += "  \"name\":\"" + name + "\","
 			strj += "  \"category\":\"" + category + "\","
 			strj += "  \"description\":\"" + description + "\","
@@ -113,10 +111,10 @@ def name():
 			strj += "  \"mrt\":\"" + mrt + "\","
 			strj += "  \"latitude\":" + str(latitude) + ","
 			strj += "  \"longitude\":" + str(longitude) + ","
-			strj += "  \"image\":[\"" + image + "\"]}],"
+			strj += "  \"image\":[\"" + image + "\"]},"
 				
 		strj = strj[:len(strj)-1]
-		strj += "}"
+		strj += "]}"
 		return strj
 
 				
@@ -163,11 +161,8 @@ def getId(id):
 				strj += "  \"mrt\":\"" + str(mrt) + "\","
 				strj += "  \"latitude\":" + str(latitude) + ","
 				strj += "  \"longitude\":" + str(longitude) + ","
-				strj += "  \"image\":[\"" + image + "\"]},"
-				
-			strj = strj[:len(strj)-1]
-			strj += "}"
-	return strj
+				strj += "  \"image\":[\"" + image + "\"]}}"
+		return strj
 
 
 app.run(host='0.0.0.0',port=3000)
