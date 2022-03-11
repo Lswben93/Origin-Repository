@@ -88,7 +88,7 @@ def name():
 			strj += "}"
 			return strj
 	else:
-		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations  LIMIT " + str(12*int(page)) + ",12"
+		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations  LIMIT " + str(int(page)) + ",1"
 		mycursor.execute(strsql)
 		result=mycursor.fetchall()
 		strj = "{\"nextpage\":"+str(nextpage)+","
