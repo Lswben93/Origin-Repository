@@ -167,7 +167,7 @@ def getId(id):
 				strj += "  \"mrt\":\"" + str(mrt) + "\","
 				strj += "  \"latitude\":" + str(latitude) + ","
 				strj += "  \"longitude\":" + str(longitude) + ","
-				strj += "  \"image\":" + str(newimages).replace("'","\"") + "}"
+				strj += "  \"image\":" + str(newimages).replace("'","\"") + "}}"
 		return strj
 
 
