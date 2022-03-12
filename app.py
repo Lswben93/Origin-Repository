@@ -71,7 +71,9 @@ def name():
 				mrt=row["mrt"]
 				latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
 				longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
-				image=row["image"].decode("utf-8")
+				images=row["image"].decode("utf-8")
+				newimage=images.replace('jpghttps','jpg,https').replace('JPGhttps','JPG,https')
+				newimages=newimage.split(",")
 				strj += "  {\"id\":" + str(id) + ","
 				strj += "  \"name\":\"" + name + "\","
 				strj += "  \"category\":\"" + category + "\","
@@ -81,11 +83,11 @@ def name():
 				strj += "  \"mrt\":\"" + mrt + "\","
 				strj += "  \"latitude\":" + str(latitude) + ","
 				strj += "  \"longitude\":" + str(longitude) + ","
-				strj += "  \"image\":[\"" + image + "\"]},"
+				strj += "  \"image\":" + str(newimages).replace("'","\"") + "},"
 				
-		strj = strj[:len(strj)-1]
-		strj += "]}"
-		return strj
+			strj = strj[:len(strj)-1]
+			strj += "]}"
+			return strj
 	else:
 		strsql = "SELECT id,name,category,description,address,transport,mrt,latitude,longitude,image FROM informations  LIMIT " + str(12*int(page)) + ",12"
 		mycursor.execute(strsql)
@@ -101,7 +103,9 @@ def name():
 			mrt=row["mrt"]
 			latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
 			longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
-			image=row["image"].decode("utf-8")
+			images=row["image"].decode("utf-8")
+			newimage=images.replace("jpghttps","jpg,https").replace("JPGhttps","JPG,https")
+			newimages=newimage.split(",")
 			strj += "  {\"id\":" + str(id) + ","
 			strj += "  \"name\":\"" + name + "\","
 			strj += "  \"category\":\"" + category + "\","
@@ -111,7 +115,7 @@ def name():
 			strj += "  \"mrt\":\"" + mrt + "\","
 			strj += "  \"latitude\":" + str(latitude) + ","
 			strj += "  \"longitude\":" + str(longitude) + ","
-			strj += "  \"image\":[\"" + image + "\"]},"
+			strj += "  \"image\":" + str(newimages).replace("'","\"") + "},"
 				
 		strj = strj[:len(strj)-1]
 		strj += "]}"
@@ -151,7 +155,9 @@ def getId(id):
 				mrt=row["mrt"]
 				latitude=json.dumps(row["latitude"], cls=JsonEncoder,ensure_ascii=False)
 				longitude=json.dumps(row["longitude"], cls=JsonEncoder,ensure_ascii=False)
-				image=row["image"].decode("utf-8")
+				images=row["image"].decode("utf-8")
+				newimage=images.replace('jpghttps','jpg,https').replace('JPGhttps','JPG,https')
+				newimages=newimage.split(",")
 				strj += "  \"id\":" + str(id) + ","
 				strj += "  \"name\":\"" + name + "\","
 				strj += "  \"category\":\"" + category + "\","
@@ -161,8 +167,8 @@ def getId(id):
 				strj += "  \"mrt\":\"" + str(mrt) + "\","
 				strj += "  \"latitude\":" + str(latitude) + ","
 				strj += "  \"longitude\":" + str(longitude) + ","
-				strj += "  \"image\":[\"" + image + "\"]}}"
+				strj += "  \"image\":" + str(newimages).replace("'","\"") + "}"
 		return strj
 
 
-app.run(host='0.0.0.0',port=3000)
+app.run(port=3000)
