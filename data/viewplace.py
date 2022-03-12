@@ -1,3 +1,4 @@
+from dataclasses import replace
 import mysql.connector
 import json
 
@@ -27,12 +28,15 @@ def dataSave(data):
             mrt=needData["MRT"]
             latitude=needData["latitude"]
             longitude=needData["longitude"]
-            replace=needData["file"].replace('jpghttps','jpg,https').replace('JPGhttps','JPG,https')
-            split=replace.split(",")
-            image=split[0]
+            replace=needData["file"].replace('jpghttps','jpg,https').replace('JPGhttps','JPG,https').replace('mp3https','mp3,https').replace('flvhttps','flv,https')
+            images=replace.split(",")
+            newimages=""
+            for i in images:
+                if "jpg" in i or "JPG" in i:
+                    newimages+=i
             mycursor=DB.cursor()
             sql="INSERT INTO informations (name,category,description,address,transport,mrt,latitude,longitude,image) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            mycursor.execute(sql,(name,category,description,address,transport,mrt,latitude,longitude,image))
+            mycursor.execute(sql,(name,category,description,address,transport,mrt,latitude,longitude,newimages))
             DB.commit()
     except Exception as e:
         DB.rollback()
@@ -41,4 +45,5 @@ def dataSave(data):
 if __name__ == "__main__":
     a=getData()
     dataSave(a)
+            
         
